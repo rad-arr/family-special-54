@@ -208,6 +208,18 @@ body, .screen, .screen.illustrated, .screen.friend-illustrated, .screen.love-wor
 @keyframes girl-wiggle-left{0%,35%{transform:translateY(0) rotate(0deg)}70%,100%{transform:translateY(-1px) rotate(-.34deg)}}
 @keyframes girl-wiggle-right{0%,33%{transform:translateY(0) rotate(0deg)}70%,100%{transform:translateY(-1px) rotate(.32deg)}}
 @media(prefers-reduced-motion:reduce){#family .girl-sticker{animation:none!important}}
+
+
+/* FIX 2026-11-20: exactly one composition per chapter.
+   More specific than legacy .art rules; portrait/mobile and desktop never coexist. */
+@media screen and (max-width:849.98px) {
+  section.screen > div.art.desktop-art { display:none !important; visibility:hidden !important; }
+  section.screen > div.art.mobile-art { display:block !important; visibility:visible !important; }
+}
+@media screen and (min-width:850px) {
+  section.screen > div.art.mobile-art { display:none !important; visibility:hidden !important; }
+  section.screen > div.art.desktop-art { display:block !important; visibility:visible !important; }
+}
 </style><style>
 /* Final approved family collage with two animated smile overlays. */
 .screen.family-illustrated {background:#f8e9df!important;padding:0;}
@@ -249,7 +261,7 @@ body, .screen, .screen.illustrated, .screen.friend-illustrated, .screen.love-wor
   .mobile-reader-bar{display:none!important;}
   .playback-state{margin:4px 10px 12px!important;}
 }
-</style><meta content="noindex, nofollow, noarchive" name="robots"/><meta content="mobile-approved-v2-2026-11-19" name="family-site-version"/><style>
+</style><meta content="noindex, nofollow, noarchive" name="robots"/><meta content="responsive-single-layout-2026-11-20" name="family-site-version"/><style>
 @media(max-width:849.98px){
  #menu .mobile-art .hs-child{left:53%!important;top:23%!important;width:44%!important;height:12%!important;}
  #menu .mobile-art .hs-friend{left:48%!important;top:35%!important;width:49%!important;height:11%!important;}
@@ -300,4 +312,21 @@ for(const id of ['audio-vika','audio-natasha']){
  const update=()=>document.querySelectorAll('[data-audio="'+id.replace('audio-','')+'"]').forEach(b=>b.setAttribute('aria-pressed',String(!a.paused)));
  ['play','pause','ended'].forEach(ev=>a.addEventListener(ev,update));
 }
+</script><script>
+(function(){
+  function selectLayout(){
+    var desktop = window.matchMedia('(min-width: 850px)').matches;
+    document.querySelectorAll('section.screen').forEach(function(section){
+      section.querySelectorAll(':scope > .mobile-art').forEach(function(el){
+        el.style.setProperty('display', desktop ? 'none' : 'block', 'important');
+      });
+      section.querySelectorAll(':scope > .desktop-art').forEach(function(el){
+        el.style.setProperty('display', desktop ? 'block' : 'none', 'important');
+      });
+    });
+  }
+  selectLayout();
+  window.addEventListener('resize', selectLayout, {passive:true});
+  window.addEventListener('orientationchange', selectLayout, {passive:true});
+})();
 </script></body></html>
